@@ -7,7 +7,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from other_scripts import network, standardoptions, csvTOass
-from other_scripts.unused import download
 from ui import ui, ui_barrage_options, ui_about
 
 
@@ -16,9 +15,9 @@ class MyWidget(QMainWindow, ui.Ui_MainWindow):
         super(MyWidget, self).__init__()
         self.setupUi(self)
 
-        global textSpeedIndex, textSizeIndex, PlayResX, PlayResY, native_video, video_name, video_ep, textColor
+        global textSpeedIndex, textSizeIndex, PlayResX, PlayResY, native_video, video_name, video_ep, textColor, host
 
-        textSpeedIndex, textSizeIndex, PlayResX, PlayResY = standardoptions.get_options()  # 获取默认设置
+        textSpeedIndex, textSizeIndex, PlayResX, PlayResY, host = standardoptions.get_options()  # 获取默认设置
         native_video = ''
         video_name = ''
         video_ep = 1
@@ -59,16 +58,18 @@ class MyWidget(QMainWindow, ui.Ui_MainWindow):
 
     def search(self):
         search_name = self.lineEdit_Search.text()
-        result = network.get_video_names(search_name)
-        self.comboBox_chosen.clear()
-        self.comboBox_chosen.addItems(result)
+        if search_name != '':
+            result = network.get_video_names(search_name, host)
+            self.comboBox_chosen.clear()
+            self.comboBox_chosen.addItems(result)
 
     def choose(self):
         global video_name
         video_name = self.comboBox_chosen.currentText()
-        episode_list = network.get_episode_number(video_name)
-        self.comboBox_episode.clear()
-        self.comboBox_episode.addItems(episode_list)
+        if video_name != '':
+            episode_list = network.get_episode_number(video_name, host)
+            self.comboBox_episode.clear()
+            self.comboBox_episode.addItems(episode_list)
 
     def choose_ep(self):
         global video_ep
@@ -88,7 +89,7 @@ class MyWidget(QMainWindow, ui.Ui_MainWindow):
         textSpeedIndex = self.comboBox_textSpeed.currentIndex()
 
     def generate(self):
-        download.download(video_name, video_ep)
+        network.receive_csv(video_name, video_ep, host)
         csvTOass.main(native_video, textSpeedIndex, textSizeIndex, PlayResX, PlayResY)
 
     def color(self):
@@ -105,8 +106,8 @@ class MyWidget(QMainWindow, ui.Ui_MainWindow):
         hour = selectedTime.toString('hh')
         minute = selectedTime.toString('mm')
         second = selectedTime.toString('ss')
-        time = int(hour)*360000 + int(minute)*6000 + int(second)*100 + randint(0, 99)
-        network.sendBarrage(video_name, video_ep, text, time, textColor)
+        barrage_time = int(hour)*360000 + int(minute)*6000 + int(second)*100 + randint(0, 99)
+        network.sendBarrage(video_name, video_ep, text, barrage_time, textColor, host)
 
 
 class ChildWin_barrage_options(QDialog, ui_barrage_options.Ui_Dialog_barrage_options):
@@ -134,7 +135,7 @@ class ChildWin_barrage_options(QDialog, ui_barrage_options.Ui_Dialog_barrage_opt
         options_PlayResY = int(self.lineEdit_PlayResY.text())
         PlayResX = options_PlayResX
         PlayResY = options_PlayResY
-        standardoptions.set_options(options_textSpeedIndex, options_textSizeIndex, options_PlayResX, options_PlayResY)
+        standardoptions.set_options(options_textSpeedIndex, options_textSizeIndex, options_PlayResX, options_PlayResY, host)
         self.close()
 
     def cancel(self):

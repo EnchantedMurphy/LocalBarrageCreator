@@ -35,5 +35,5 @@ class Ui_Dialog_about(object):
     def retranslateUi(self, Dialog_about):
         _translate = QtCore.QCoreApplication.translate
         Dialog_about.setWindowTitle(_translate("Dialog_about", "关于"))
-        self.label.setText(_translate("Dialog_about", "version: ifd.230224"))
+        self.label.setText(_translate("Dialog_about", "version: alpha.0.1.0"))
         self.label_2.setText(_translate("Dialog_about", "本地弹幕生成器"))

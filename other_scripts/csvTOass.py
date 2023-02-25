@@ -61,7 +61,7 @@ def write_ass(movie_path_splited, PlayResX, PlayResY, textSpeed, textSize):
     # 读取视频对应csv数据表中的数据，包括弹幕出现的时间码（毫秒）与文本及其颜色
     ass_name = movie_path_splited + '.ass'  
     try:
-        ass=open(ass_name,"x", encoding='UTF-8')
+        ass = open(ass_name, "x", encoding='UTF-8')
         ass.write("[Script Info]\n") # 写入ass文件中的固定开头，一般不会改变
         ass.write("ScriptType: v4.00+\n")
         ass.write("Collisions: Normal\n")

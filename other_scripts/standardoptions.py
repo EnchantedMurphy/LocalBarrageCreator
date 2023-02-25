@@ -9,13 +9,15 @@ def get_options():
     textSizeIndex = int(data['textSizeIndex'])
     PlayResX = int(data['PlayResX'])
     PlayResY = int(data['PlayResY'])
-    return textSpeedIndex, textSizeIndex, PlayResX, PlayResY
+    host = data['host']
+    return textSpeedIndex, textSizeIndex, PlayResX, PlayResY, host
 
 
-def set_options(textSpeedIndex, textSizeIndex, PlayResX, PlayResY):
+def set_options(textSpeedIndex, textSizeIndex, PlayResX, PlayResY, host):
     data = {'textSpeedIndex': textSpeedIndex,
             "textSizeIndex": textSizeIndex,
             "PlayResX": PlayResX,
-            "PlayResY": PlayResY}
+            "PlayResY": PlayResY,
+            "host": host}
     with open('options.json', 'w+') as options:
         json.dump(data, options)
